@@ -1,2 +1,2 @@
 cool shell scripts,
-made so I can take work home
+made so I can work on this from home

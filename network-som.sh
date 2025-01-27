@@ -4,7 +4,7 @@
 
 if [ $# -ne 3 ]; then
 	echo " [ERROR] PLEASE PROVIDE JUST 3 ARGUMENTS "
-	echo " EXAMPLE: 192.168.4.0 /23 129.168.5.100)"
+	echo " EXAMPLE: 192.168.4.0 /23 129.168.5.100"
 	exit 1
 else
 
@@ -50,6 +50,7 @@ echo "$mask" #Separates number from the slash (/)
 ip=$1
 
 while [ $mask -ne 0 ]; do
+
 	echo "$ip"
 	let "mask=mask-8"
 	echo "$mask"

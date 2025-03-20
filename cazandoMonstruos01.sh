@@ -17,12 +17,14 @@ for u in $@; do
 		echo " * User $u exists "
 		let procUsers=$procUsers+1
 		userId=$(cat /etc/passwd | grep "^$u:" | cut -d ":" -f 3)
+
 		if [ $userId -lt 1000 ]; then
-			let sysUsers=$sysUser+1
+			let sysUsers=$sysUsers+1
 			echo ">> This is a system user"
 			usrFolder=$(cat /etc/passwd | grep "^$u:" | cut -d ":" -f 6)
+			folderOwner=$(ls -l -g $usrFolder | grep "$u" | cut -d " " -f 3)
 			echo " * $u's folder: $usrFolder"
-			echo " * $usrFolder's owner: tbd "
+			echo " * $usrFolder's owner: $folderOwner "
 			echo " "
 		else
 			let deskUsers=$deskUsers+1
@@ -30,8 +32,10 @@ for u in $@; do
 			echo " "
 			#Check personal folder
 			usrFolder=$(cat /etc/passwd | grep "^$u:" | cut -d ":" -f 6)
+			#Get Folder's owner
+			folderOwner=$(ls -l -g /home | grep "$u" | cut -d " " -f 3)
 			echo " * $u's folder: $usrFolder"
-			echo " * $usrFolder's owner: tbd"
+			echo " * $usrFolder's owner: $folderOwner"
 			echo " "
 		fi
 	fi

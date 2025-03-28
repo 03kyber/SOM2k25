@@ -1,5 +1,4 @@
 #!/bin/bash
-
 if [ $UID -ne 0 ]; then
 	echo "Please run this script with sudo."
 	exit 1
@@ -10,10 +9,9 @@ if [ $# -ne 2 ]; then
 	echo " * Input a relative route and a -r, -w or -x argument."
 else
 	if [ -f $1 ]; then
-		echo "$1 is a file"
+		echo "[:)] $1 is a valid file"
 		if [ $2 = "-r" -o $2 = "-w" -o $2 = "-x" ]; then
 			echo "$2 is correct"
-			#aqui van las cosas vvvv
 
 			allPerms=$(stat $1 -c %A)
 			groupPerms=${allPerms:4:3}
@@ -23,17 +21,48 @@ else
 			fileOwner=$(stat $1 -c %U)
 			groupOwner=$(stat $1 -c %G)
 
-
-			echo "User Permissions: $userPerms"
-			echo "Group Permissions: $groupPerms"
-			echo "Other Permissions: $otherPerms"
-			echo "The Owner: $fileOwner"
-			echo "The Owners (Group): $groupOwner "
-
 			if [ $2 = "-r" ]; then
-
-				echo $userPerms | grep 
+				paramToSearch="r"
+				permText="Read"
 			fi
+			if [ $2 = "-w" ]; then
+				paramToSearch="w"
+				permText="Write"
+			fi
+			if [ $2 = "-x" ]; then
+				paramToSearch="x"
+				permText="Execute"
+			fi
+
+			rc=0
+			permUser="True"
+			permGroup="True"
+			permOthers="True"
+
+			echo $userPerms | grep "$paramToSearch" || rc=1
+			if [ $rc -eq "1" ]; then
+				echo "No $permText permissions"
+				permUser="False"
+				rc=0
+			fi
+			echo $groupPerms | grep "$paramToSearch" || rc=1
+			if [ $rc -eq "1" ]; then
+				echo "No $permText permissions"
+				permGroup="False"
+				rc=0
+			fi
+			echo $otherPerms | grep "$paramToSearch" || rc=1
+			if [ $rc -eq "1" ]; then
+				echo "No $permText permissions"
+				permOthers="False"
+				rc=0
+			fi
+
+			echo " "
+			echo "Owner : $fileOwner - $permText Permissions: $permUser"
+			echo "Group: $groupOwner - $permText Permissions: $permGroup"
+			echo "Other: $permText Permissions: $permOthers"
+			echo " "
 		else
 			echo "[ ERROR ] Invalid argument."
 		fi
